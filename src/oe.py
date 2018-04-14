@@ -46,7 +46,7 @@ import shutil
 from xml.dom import minidom
 
 __author__ = 'LibreELEC'
-__scriptid__ = 'service.libreelec.settings'
+__scriptid__ = 'service.coreelec.settings'
 __addon__ = xbmcaddon.Addon(id=__scriptid__)
 __cwd__ = __addon__.getAddonInfo('path')
 __oe__ = sys.modules[globals()['__name__']]
@@ -821,20 +821,26 @@ BOOT_STATUS = load_file('/storage/.config/boot.status')
 ############################################################################################
 
 try:
-    configFile = '%s/userdata/addon_data/service.libreelec.settings/oe_settings.xml' % XBMC_USER_HOME
-    if not os.path.exists('%s/userdata/addon_data/service.libreelec.settings' % XBMC_USER_HOME):
-        if os.path.exists('%s/userdata/addon_data/service.openelec.settings' % XBMC_USER_HOME):
-            shutil.copytree(('%s/userdata/addon_data/service.openelec.settings' % XBMC_USER_HOME),
-                    ('%s/userdata/addon_data/service.libreelec.settings' % XBMC_USER_HOME))
-            with open(configFile,'r+') as f:
-                xml = f.read()
-                xml = xml.replace("<openelec>","<libreelec>")
-                xml = xml.replace("</openelec>","</libreelec>")
-                f.seek(0)
-                f.write(xml)
-                f.truncate()
-        else:
-            os.makedirs('%s/userdata/addon_data/service.libreelec.settings' % XBMC_USER_HOME)
+    configFile = '%s/userdata/addon_data/service.coreelec.settings/oe_settings.xml' % XBMC_USER_HOME
+    oe_addon_data = '%s/userdata/addon_data/service.openelec.settings' % XBMC_USER_HOME
+    le_addon_data = '%s/userdata/addon_data/service.coreelec.settings' % XBMC_USER_HOME
+    ce_addon_data = '%s/userdata/addon_data/service.coreelec.settings' % XBMC_USER_HOME
+    if not os.path.exists(ce_addon_data):
+        for addon_data in (le_addon_data, oe_addon_data):
+            if os.path.exists(addon_data):
+                shutil.copytree(addon_data, ce_addon_data)
+                with open(configFile,'r+') as f:
+                    xml = f.read()
+                    xml = xml.replace("<openelec>","<coreelec>")
+                    xml = xml.replace("</openelec>","</coreelec>")
+                    xml = xml.replace("<libreelec>","<coreelec>")
+                    xml = xml.replace("</libreelec>","</coreelec>")
+                    f.seek(0)
+                    f.write(xml)
+                    f.truncate()
+                break
+    if not os.path.exists(ce_addon_data): 
+        os.makedirs(ce_addon_data)
     if not os.path.exists('%s/services' % CONFIG_CACHE):
         os.makedirs('%s/services' % CONFIG_CACHE)
 except:

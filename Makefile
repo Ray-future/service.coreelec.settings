@@ -24,7 +24,7 @@
 #  OpenELEC Licensing  <license@openelec.tv>  http://www.openelec.tv
 ################################################################################
 
-ADDON_NAME=service.libreelec.settings
+ADDON_NAME=service.coreelec.settings
 ADDON_VERSION=9.0.0
 DISTRONAME:=CoreELEC
 
